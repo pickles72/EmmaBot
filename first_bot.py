@@ -31,6 +31,19 @@ tweetbot.read(book4)
 
 for tweet in tweets:
     print(tweet.text)
+
+    if "tbhjuststop" in tweet.text:
+        file = open('tweets.txt', 'r+')
+        found = False
+        for line in file:
+            if tweet.text is line:
+                found = True
+
+        if not found:
+            print(tweet.text)
+            file.write(tweet.text + "\n")
+
+
     for key in key_words:
         if key in tweet.text.lower():
             ## Tweet at the person

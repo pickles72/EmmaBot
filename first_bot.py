@@ -1,7 +1,6 @@
 import tweepy
 from secrets import *
-from markovbot import markovbot35
-import os
+import requests
 
 auth = tweepy.OAuthHandler(consumer_key, consumer_secret)
 
@@ -9,39 +8,19 @@ auth.set_access_token(access_token, access_secret)
 
 api = tweepy.API(auth)
 
-tweets = api.home_timeline()
-
-# Initialise a MarkovBot instance
-tweetbot = markovbot35.MarkovBot()
-
-# Get the current directory's path
-dirname = os.path.dirname(os.path.abspath(__file__))
-# Construct the path to the book
-book = os.path.join(dirname, u'158-0.txt')
-book2 = os.path.join(dirname, u'1342-0.txt')
-book3 = os.path.join(dirname, u'pg105.txt')
-book4 = os.path.join(dirname, u'pg161.txt')
-
-# Make your bot read the book!
-tweetbot.read(book)
-tweetbot.read(book2)
-tweetbot.read(book3)
-tweetbot.read(book4)
-
+tweets = api.home_timeline(count=1)
 
 for tweet in tweets:
-    print(tweet.text)
 
-    if "tbhjuststop" in tweet.text:
-        file = open('tweets.txt', 'r+')
-        found = False
-        for line in file:
-            if tweet.text is line:
-                found = True
+    if tweet.author.id == 1416289596:
 
-        if not found:
-            print(tweet.text)
-            file.write(tweet.text + "\n")
+        if not tweet.favorited:
+            api.create_favorite(tweet.id)
+
+            response = tweet.text
+
+            response = "@Foshasta " + tweet.text
+            api.update_status(status=response)
 
 
     for key in key_words:

@@ -8,7 +8,7 @@ auth.set_access_token(access_token, access_secret)
 
 api = tweepy.API(auth)
 
-tweets = api.home_timeline(count=1)
+tweets = api.home_timeline()
 
 for tweet in tweets:
 
@@ -20,6 +20,9 @@ for tweet in tweets:
             response = tweet.text
 
             response = "@Foshasta " + tweet.text
+
+            if len(response) > 140:
+                continue
             api.update_status(status=response)
 
 
@@ -28,6 +31,10 @@ for tweet in tweets:
             ## Tweet at the person
             response = "@" + tweet.user.screen_name + " " + key_words[key]
 
-            api.update_status(status=response, in_reply_to_status_id=tweet.id)
+            try:
+                api.update_status(status=response, in_reply_to_status_id=tweet.id)
+            except tweepy.TweepError:
+                continue
+
             continue
 
